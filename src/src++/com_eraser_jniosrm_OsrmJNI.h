@@ -9,11 +9,11 @@ extern "C" {
 #endif
 /*
  * Class:     com_eraser_jniosrm_OsrmJNI
- * Method:    main
- * Signature: ()I
+ * Method:    getOsrmRoute
+ * Signature: (DDDD)I
  */
-JNIEXPORT jint JNICALL Java_com_eraser_jniosrm_OsrmJNI_main
-  (JNIEnv *, jobject);
+JNIEXPORT jint JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmRoute
+  (JNIEnv *, jobject, jdouble, jdouble, jdouble, jdouble);
 
 #ifdef __cplusplus
 }
