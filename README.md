@@ -87,12 +87,14 @@ JNIEXPORT jint JNICALL Java_com_eraser_jniosrm_OsrmJNI_main
 
 ```bash
 mkdir build
-cmake ..
-cmake --DCMAKE_CXX_COMPILER=/usr/bin/g++ --build .
+cmake -DCMAKE_CXX_COMPILER=/usr/bin/g++ ..
+cmake --build .
 ```
 
 
 <br>
 # TODO
-- [ ] OSRM thread-safe 확인
-- [ ] Java application `System.loadLibrary` vs. `System.load`
+
+-[ ] OSRM thread-safe 확인
+
+-[ ] Java application `System.loadLibrary` vs. `System.load`
