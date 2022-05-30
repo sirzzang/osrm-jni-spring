@@ -23,6 +23,6 @@ public class OsrmJNI {
     // load library as static
     static {
         // System.loadLibrary("/home/eraser/projects/jniosrm/src/src++/osrmjniexample.so");
-        System.load("/home/eraser/projects/jniosrm/src/src++/build/libosrmjni-example.so");
+        System.load("/home/eraser/projects/jniosrm/src/src++/build/libosrmjni.so");
     }
 }

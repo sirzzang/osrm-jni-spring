@@ -28,10 +28,10 @@ endif()
 
 link_directories(${LibOSRM_LIBRARY_DIRS})
 # add_executable(osrm-example osrmJNI.cpp) # executable 파일 및 소스 코드 이름 변경
-add_library(osrmjni-example SHARED osrmJNI.cpp) # shared option
+add_library(osrmjni SHARED osrmJNI.cpp) # shared option
 find_package(LibOSRM REQUIRED)
 
-target_link_libraries(osrmjni-example ${LibOSRM_LIBRARIES} ${LibOSRM_DEPENDENT_LIBRARIES}) # library 이름 변경
+target_link_libraries(osrmjni ${LibOSRM_LIBRARIES} ${LibOSRM_DEPENDENT_LIBRARIES}) # library 이름 변경
 include_directories(SYSTEM ${LibOSRM_INCLUDE_DIRS})
 include_directories(/usr/lib/jvm/java-11-openjdk-amd64/include /usr/lib/jvm/java-11-openjdk-amd64/include/linux) # jni.h 라이브러리 헤더 추가
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LibOSRM_CXXFLAGS} -D_REENTRANT") # -D_REENTRANT 옵션 추가

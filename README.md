@@ -3,7 +3,7 @@
 
 ## Install OSRM
 
-[OSRM-backend](https://github.com/Project-OSRM/osrm-backend) 참고하여 OSRM 라이브러리를 설치한다.
+[OSRM-backend](https://github.com/Project-OSRM/osrm-backend)를 참고하여 OSRM 라이브러리를 설치한다.
 
 * 예시(Ubuntu 22.04. 소스코드 빌드)
     ```bash
@@ -86,13 +86,18 @@ JNIEXPORT jint JNICALL Java_com_eraser_jniosrm_OsrmJNI_main
 * 참고: [CMakeList.txt for building OSRM C++ example](https://github.com/Project-OSRM/osrm-backend/blob/master/example/CMakeLists.txt)
 * Cmake 이용 빌드
   - g++ 컴파일러 사용: `-DCMAKE_CXX_COMPILER`
-  - 멀티 쓰레드: 
+  - 멀티 쓰레드 옵션: `-DREENTRANT`
 
 ```bash
 mkdir build
 cmake -DCMAKE_CXX_COMPILER=/usr/bin/g++ ..
 cmake --build .
 ```
+```bash
+# generated build script
+/usr/bin/g++ -fPIC  -std=c++14 -DBOOST_TEST_DYN_LINK -DBOOST_SPIRIT_USE_PHOENIX_V3 -DBOOST_RESULT_OF_USE_DECLTYPE -DBOOST_FILESYSTEM_NO_DEPRECATED -I/usr/include/lua5.2 -I/usr/local/include -I/usr/local/include/osrm -D_REENTRANT -O3 -DNDEBUG -shared -Wl,-soname,libosrmjni.so -o libosrmjni.so CMakeFiles/osrmjni.dir/osrmJNI.cpp.o  -L/usr/local/lib -losrm -fuse-ld=gold -Wl,--disable-new-dtags -Wl,--gc-sections -Wl,-O1 -Wl,--hash-style=gnu -Wl,--sort-common -L/usr/local/lib -losrm -fuse-ld=gold -Wl,--disable-new-dtags -Wl,--gc-sections -Wl,-O1 -Wl,--hash-style=gnu -Wl,--sort-common /usr/lib/x86_64-linux-gnu/libboost_regex.so.1.74.0 /usr/lib/x86_64-linux-gnu/libboost_date_time.so.1.74.0 /usr/lib/x86_64-linux-gnu/libboost_chrono.so.1.74.0 /usr/lib/x86_64-linux-gnu/libboost_filesystem.so.1.74.0 /usr/lib/x86_64-linux-gnu/libboost_iostreams.so.1.74.0 /usr/lib/x86_64-linux-gnu/libboost_thread.so.1.74.0 /usr/lib/x86_64-linux-gnu/libboost_system.so.1.74.0 -ltbb -ltbbmalloc -lrt -lz 
+```
+
 
 <br>
 
