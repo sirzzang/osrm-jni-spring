@@ -84,7 +84,9 @@ JNIEXPORT jint JNICALL Java_com_eraser_jniosrm_OsrmJNI_main
 
  컴파일 및 링킹을 통해, `.so` 파일을 생성한다. 이 프로젝트에서는 OSRM backend에서 제공하는 컴파일 방식을 참고해, `CMakeLists.txt`를 변경해 빌드했다.
 * 참고: [CMakeList.txt for building OSRM C++ example](https://github.com/Project-OSRM/osrm-backend/blob/master/example/CMakeLists.txt)
-* Cmake 이용 빌드 시, g++ 컴파일러 사용
+* Cmake 이용 빌드
+  - g++ 컴파일러 사용: `-DCMAKE_CXX_COMPILER`
+  - 멀티 쓰레드: 
 
 ```bash
 mkdir build
@@ -92,10 +94,14 @@ cmake -DCMAKE_CXX_COMPILER=/usr/bin/g++ ..
 cmake --build .
 ```
 
+<br>
+
+# Accessing data between Java application and native code
+
 
 <br>
+
 # TODO
 
 - [ ] OSRM thread-safe 확인
-
 - [ ] Java application `System.loadLibrary` vs. `System.load`

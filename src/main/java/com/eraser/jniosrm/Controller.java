@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/route")
 public class Controller {
-    
+
     private OsrmJNI jni = new OsrmJNI();
 
     @GetMapping("/walking")
-    public int getDurationByWalking(@RequestParam(value = "from") String from,
-                                    @RequestParam(value = "to") String to) {
-                                        
+    public OsrmResponse getDurationByWalking(@RequestParam(value = "from") String from,
+            @RequestParam(value = "to") String to) {
+
         String[] fromCoordinates = from.split(",");
         double fromLon = Double.parseDouble(fromCoordinates[0]);
         double fromLat = Double.parseDouble(fromCoordinates[1]);
@@ -23,10 +23,10 @@ public class Controller {
         double toLon = Double.parseDouble(toCoordinates[0]);
         double toLat = Double.parseDouble(toCoordinates[1]);
 
-        int returnedDuration = jni.returnOsrmRoute(fromLon, fromLat, toLon, toLat);
-        
+        OsrmResponse returnedResponse = jni.returnOsrmResponse(fromLon, fromLat, toLon, toLat);
+        System.out.println("returned to spring controller: " + returnedResponse);
 
-        return returnedDuration;
+        return returnedResponse;
     }
 
 }
