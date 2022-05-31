@@ -20,6 +20,39 @@
 
 using namespace osrm;
 
+long* createOsrmInstance() {
+
+    // OSRM instance
+    EngineConfig config;
+    config.storage_config = boost::filesystem::path{"/home/eraser/projects/osrm-backend/data/south-korea-latest.osrm"};
+    config.use_shared_memory = false;
+    config.algorithm = EngineConfig::Algorithm::MLD;
+    const OSRM osrm{config};
+
+    std::cout << "OSRM instance created: " << (long)&osrm << std::endl;
+
+    // TODO: 포인터 반환 이렇게 하는 거 맞나?
+    return (long*) &osrm;
+}
+
+JNIEXPORT jlong JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmPointer
+  (JNIEnv *env, jobject) 
+{
+    std::cout << "Current JNI thread env: " << (long)&env << std::endl;
+    
+    long* osrm_ptr = createOsrmInstance();
+
+    if (osrm_ptr != nullptr) {
+        std::cout << "pointer " << osrm_ptr << " is null" << std::endl;
+        return 0;
+    } else {
+        std::cout << "pointer " << osrm_ptr << " is not null" << std::endl;
+        return 1;
+    }
+
+    std::cout << "\n\n\n";
+};
+
 JNIEXPORT jobject JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmResponse(JNIEnv *env, jobject, jdouble fromLongitude, jdouble fromLatitude, jdouble toLongitude, jdouble toLatitude)
 {
 

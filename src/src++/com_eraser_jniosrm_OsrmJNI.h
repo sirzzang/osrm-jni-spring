@@ -15,6 +15,14 @@ extern "C" {
 JNIEXPORT jobject JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmResponse
   (JNIEnv *, jobject, jdouble, jdouble, jdouble, jdouble);
 
+/*
+ * Class:     com_eraser_jniosrm_OsrmJNI
+ * Method:    getOsrmPointer
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmPointer
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif

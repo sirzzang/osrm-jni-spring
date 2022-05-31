@@ -15,9 +15,15 @@ public class OsrmJNI {
     private native OsrmResponse getOsrmResponse(double fromLongitude, double fromLatitude, double toLongitude,
             double toLatitude);
 
+    private native long getOsrmPointer();
+
     public OsrmResponse returnOsrmResponse(double fromLongitude, double fromLatitude, double toLongitude,
             double toLatitude) {
         return getOsrmResponse(fromLongitude, fromLatitude, toLongitude, toLatitude);
+    }
+
+    public long returnOsrmPointer() {
+        return getOsrmPointer();
     }
 
     // load library as static
