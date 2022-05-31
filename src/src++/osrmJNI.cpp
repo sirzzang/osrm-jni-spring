@@ -28,6 +28,11 @@ JNIEXPORT jobject JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmResponse(JNIEnv
     jobject response;
 
     // JNIEnv
+    /**
+     * NOTE
+     * - JNI 인터페이스 포인터(*env)는 자바와 네티이브 메소드를 연결하는 인터페이스 포인터이다
+     * - JNIEnv 인자를 통해 메소드와 매핑되는 각 네티이브 함수에 접근하고 사용할 수 있다
+     */
     std::cout << "JNIENV: " << (long)&env << std::endl;
 
     // get java OsrmResponse class
@@ -35,14 +40,19 @@ JNIEXPORT jobject JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmResponse(JNIEnv
     std::cout << "class loaded: " << (long)&clazz << std::endl;
 
     // get java OsrmResponse class constructor
-    constructor = env->GetMethodID(clazz, "<constructor>", "()V");
+    constructor = env->GetMethodID(clazz, "<init>", "()V");
     std::cout << "get constructor from class: " << (long)&constructor << std::endl;
 
     // java OsrmResponse class fields
     /**
+     * NOTE
+     * - 필드 ID를 얻어 와서, 필드 값을 얻거나, 필드 값을 설정할 때 사용한다
+     * - 필드 ID는 C pointer type이다
+     *      - 참고: https://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/types.html#field_and_method_ids
      * TODO
-     * - jfieldID도 메모리 반환해야 하나?
-     * - 반환해줘야 한다고 하면, 어떻게 해줘야 하나?
+     * - jfieldID도 메모리 해제해야 하나?
+     * - 해제해줘야 한다고 하면, 어떻게 해줘야 하나?
+     *      - C pointer type이므로, delete local def로는 안 되는 듯?
      */
     jfieldID code_fid = env->GetFieldID(clazz, "code", "Ljava/lang/String;");
     jfieldID message_fid = env->GetFieldID(clazz, "message", "Ljava/lang/String;");
@@ -54,13 +64,25 @@ JNIEXPORT jobject JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmResponse(JNIEnv
     std::cout << "get distance field distance_fid: " << (long)&distance_fid << std::endl;
 
     // instantiate java object
+    /**
+     * NOTE
+     * - native code에서 자바 object를 생성하려면,
+     *      - 1) FindClass: 생성할 객체의 class를 얻고,
+     *      - 2) GetMethodId: 생성할 객체의 constructor를 얻고(<init>, ()v 주의)
+     *      - 3) NewObject: 얻은 클래스의 constructor로 인스턴스를 생성한다.
+     */
     response = env->NewObject(clazz, constructor);
     std::cout << "osrm response instance: " << (long)&response << std::endl;
 
     // OSRM 엔진 설정
-    // TODO: 엔진 static하게 한 번만 로드해놓을 수 없나? C++ 코드 단에서?
+    /**
+     * TODO
+     * - 엔진 storage_config 설정 이렇게 하는 거 맞나?
+     * - OSRM 관련 인스턴스(config, params 등등) 메모리 해제해야 하나?
+     * - 아니면, 해제 안하고 컨테이너 개념처럼 싱글톤으로 로드해서 계속 못 쓰나? C++ native 코드에서?
+     */
     EngineConfig config;
-    config.storage_config = boost::filesystem::path{"/home/eraser/projects/osrm-backend/data/south-korea-latest.osrm"}; // TODO: 이렇게 하는 거 맞나?
+    config.storage_config = boost::filesystem::path{"/home/eraser/projects/osrm-backend/data/south-korea-latest.osrm"};
     config.use_shared_memory = false;
     config.algorithm = EngineConfig::Algorithm::MLD;
 

@@ -101,8 +101,17 @@ cmake --build .
 
 <br>
 
-# Accessing data between Java application and native code
+## Accessing data between Java application and native code
 
+
+<br>
+
+## Managing memory allocation
+
+ C++ native code에서 객체를 생성하였다면, 
+
+* JVM으로 반환되는 경우
+* JVM으로 반환되지 않고 더 이상 사용되지 않는 경우
 
 <br>
 
