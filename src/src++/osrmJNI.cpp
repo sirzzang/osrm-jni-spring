@@ -23,19 +23,27 @@ using namespace osrm;
 JNIEXPORT jobject JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmResponse(JNIEnv *env, jobject, jdouble fromLongitude, jdouble fromLatitude, jdouble toLongitude, jdouble toLatitude)
 {
 
+    jclass clazz;
+    jmethodID constructor;
+    jobject response;
+
     // JNIEnv
     std::cout << "JNIENV: " << (long)&env << std::endl;
 
-    // java OsrmResponse class
-    // jclass clazz = env->FindClass("OsrmResponse");
-    jclass clazz = env->FindClass("com/eraser/jniosrm/OsrmResponse");
+    // get java OsrmResponse class
+    clazz = env->FindClass("com/eraser/jniosrm/OsrmResponse");
     std::cout << "class loaded: " << (long)&clazz << std::endl;
 
-    // java OsrmResponse class constructor
-    jmethodID init = env->GetMethodID(clazz, "<init>", "()V");
+    // get java OsrmResponse class constructor
+    constructor = env->GetMethodID(clazz, "<init>", "()V");
     std::cout << "get constructor from class: " << (long)&init << std::endl;
 
     // java OsrmResponse class fields
+    /**
+     * TODO
+     * - jfieldID도 메모리 반환해야 하나?
+     * - 반환해줘야 한다고 하면, 어떻게 해줘야 하나?
+     */
     jfieldID code_fid = env->GetFieldID(clazz, "code", "Ljava/lang/String;");
     jfieldID message_fid = env->GetFieldID(clazz, "message", "Ljava/lang/String;");
     jfieldID duration_fid = env->GetFieldID(clazz, "duration", "D");
@@ -45,8 +53,8 @@ JNIEXPORT jobject JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmResponse(JNIEnv
     std::cout << "get duration field duration_fid: " << (long)&duration_fid << std::endl;
     std::cout << "get distance field distance_fid: " << (long)&distance_fid << std::endl;
 
-    // java OsrmResponse class instantiated
-    jobject osrm_response = env->NewObject(clazz, init);
+    // instantiate java object
+    response = env->NewObject(clazz, init);
     std::cout << "osrm response instance: " << (long)&osrm_response << std::endl;
 
     // OSRM 엔진 설정
@@ -81,11 +89,10 @@ JNIEXPORT jobject JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmResponse(JNIEnv
     // code, message to be returned
     jstring code_str = env->NewStringUTF(code.c_str());
     jstring message_str = env->NewStringUTF(message.c_str());
-    std::cout << "code_str: " << (long)&code_str << std::endl;
-    std::cout << "message_str: " << (long)&message_str << std::endl;
-
     std::cout << "code: " << (long)&code << std::endl;
+    std::cout << "code_str: " << (long)&code_str << std::endl;
     std::cout << "message: " << (long)&message << std::endl;
+    std::cout << "message_str: " << (long)&message_str << std::endl;
 
     // OSRM route success
     if (status == Status::Ok)
@@ -106,34 +113,18 @@ JNIEXPORT jobject JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmResponse(JNIEnv
             std::cout << "Query might be outside of the OSM extract. \n\n";
         }
 
-        // // 테스트
-        // jniResult.values["duration"] = duration;
-        // jniResult.values["distance"] = distance;
-        // std::cout << "jniResult: " << &jniResult << std::endl;
-        // std::cout << "jniResult, duration: " << jniResult.values["duration"].get<json::Number>().value << std::endl;
-
-        // OsrmResponse 응답
-        // env->SetObjectField(osrm_response, code_fid, code_str);
-        // env->SetObjectField(osrm_response, message_fid, message_str);
+        // duration, response to be returned
         env->SetDoubleField(osrm_response, duration_fid, duration);
         env->SetDoubleField(osrm_response, distance_fid, distance);
     }
-    // else if (status == Status::Error)
-    // {
-    //     // 에러 코드, 메시지
-    //     const auto code = json_result.values["code"].get<json::String>().value;
-    //     const auto message = json_result.values["message"].get<json::String>().value;
-
-    //     // 만약 위도, 경도 거꾸로 써서 보낸 경우에 어떻게 나오는가?
-    //     // Error Code: InvalidValue
-    //     // Error Message: Invalid coordinate value.
-    //     std::cout << "Error Code: " << code << "\n";
-    //     std::cout << "Error Message: " << message << "\n";
-    // }
 
     // code, message to be returned
     env->SetObjectField(osrm_response, code_fid, code_str);
     env->SetObjectField(osrm_response, message_fid, message_str);
+
+    // delete reference
+    env->DeleteLocalRef(code_str);
+    env->DeleteLocalRef(message_str);
 
     // end of native code
     std::cout << "\n\n";
