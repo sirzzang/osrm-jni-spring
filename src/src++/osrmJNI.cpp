@@ -35,8 +35,8 @@ JNIEXPORT jobject JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmResponse(JNIEnv
     std::cout << "class loaded: " << (long)&clazz << std::endl;
 
     // get java OsrmResponse class constructor
-    constructor = env->GetMethodID(clazz, "<init>", "()V");
-    std::cout << "get constructor from class: " << (long)&init << std::endl;
+    constructor = env->GetMethodID(clazz, "<constructor>", "()V");
+    std::cout << "get constructor from class: " << (long)&constructor << std::endl;
 
     // java OsrmResponse class fields
     /**
@@ -54,8 +54,8 @@ JNIEXPORT jobject JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmResponse(JNIEnv
     std::cout << "get distance field distance_fid: " << (long)&distance_fid << std::endl;
 
     // instantiate java object
-    response = env->NewObject(clazz, init);
-    std::cout << "osrm response instance: " << (long)&osrm_response << std::endl;
+    response = env->NewObject(clazz, constructor);
+    std::cout << "osrm response instance: " << (long)&response << std::endl;
 
     // OSRM 엔진 설정
     // TODO: 엔진 static하게 한 번만 로드해놓을 수 없나? C++ 코드 단에서?
@@ -114,13 +114,13 @@ JNIEXPORT jobject JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmResponse(JNIEnv
         }
 
         // duration, response to be returned
-        env->SetDoubleField(osrm_response, duration_fid, duration);
-        env->SetDoubleField(osrm_response, distance_fid, distance);
+        env->SetDoubleField(response, duration_fid, duration);
+        env->SetDoubleField(response, distance_fid, distance);
     }
 
     // code, message to be returned
-    env->SetObjectField(osrm_response, code_fid, code_str);
-    env->SetObjectField(osrm_response, message_fid, message_str);
+    env->SetObjectField(response, code_fid, code_str);
+    env->SetObjectField(response, message_fid, message_str);
 
     // delete reference
     env->DeleteLocalRef(code_str);
@@ -129,5 +129,5 @@ JNIEXPORT jobject JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmResponse(JNIEnv
     // end of native code
     std::cout << "\n\n";
 
-    return osrm_response;
+    return response;
 }
