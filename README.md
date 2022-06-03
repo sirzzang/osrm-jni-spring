@@ -113,6 +113,8 @@ cmake --build .
 * JVM으로 반환되는 경우
 * JVM으로 반환되지 않고 더 이상 사용되지 않는 경우
 
+ local reference로 생성되는 것들은 굳이 해제하지 않아도 된다. 잘못 해제하면 `jfieldID` 등 reference가 없어서 오류 발생
+
 <br>
 
 # TODO

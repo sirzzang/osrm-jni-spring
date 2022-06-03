@@ -203,12 +203,13 @@ JNIEXPORT jobject JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmResponse(JNIEnv
     // delete c pointer types
     /**
      * jfieldID, jmethodID는 C pointer type이므로, deleteLocalRef로 메모리 해제 불가능
-     * C pointer 타입 메모리 해제 방식으로 해제해야 함
+     * C pointer 타입 메모리 해제 방식으로 해제해야 하는 줄 알았는데,
+     * 해제하니까 no such method 에러
      */
-    delete code_fid;
-    delete message_fid;
-    delete duration_fid;
-    delete distance_fid;
+    // delete code_fid;
+    // delete message_fid;
+    // delete duration_fid;
+    // delete distance_fid;
 
     return response;
 }
