@@ -20,37 +20,50 @@
 
 using namespace osrm;
 
-long* createOsrmInstance() {
+const osrm::OSRM *createOsrmInstance()
+{
+    /**
+     * OSRM 클래스 정적 할당
+     * - 컴파일 시에 생성
+     * - 정적 생성에 의해 스택 메모리 상에 위치
+     * cf) 동적 할당: OSRM *osrm; osrm = new OSRM();
+     * cf) 기본형 변수 &, 참조형 변수 new?
+     *
+     * OSRM 클래스 소멸자
+     * OSRM::~OSRM() = default;
+     * OSRM::OSRM(OSRM &&) noexcept = default;
+     * OSRM &OSRM::operator=(OSRM &&) noexcept = default;
+     */
 
     // OSRM instance
     EngineConfig config;
     config.storage_config = boost::filesystem::path{"/home/eraser/projects/osrm-backend/data/south-korea-latest.osrm"};
     config.use_shared_memory = false;
     config.algorithm = EngineConfig::Algorithm::MLD;
+
+    // OSRM 초기화
+    /**
+     * uniform 초기화
+     * - config를 받아서 초기화? EngineConfig 위치를 받아서 -> &config가 인자
+     * - OSRM::OSRM(engine::EngineConfig &config)
+     */
     const OSRM osrm{config};
+    std::cout << "OSRM instance created: " << &osrm << std::endl;
 
-    std::cout << "OSRM instance created: " << (long)&osrm << std::endl;
+    // 상수 포인터로 상수 변수를 가리킴
+    const OSRM *osrmPtr = &osrm;
+    std::cout << "*osrmPtr: " << osrmPtr << std::endl; //  0x7f2b4ba0c248
+    std::cout << typeid(osrmPtr).name() << std::endl;  // 0x7f2b4ba0c248
+    // 포인터가 가리키는 상수의 값 역참조 불가능
 
-    // TODO: 포인터 반환 이렇게 하는 거 맞나?
-    return (long*) &osrm;
+    // NOTE: addreess of local varible 'osrm' returned
+    return &osrm;
 }
 
-JNIEXPORT jlong JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmPointer
-  (JNIEnv *env, jobject) 
+JNIEXPORT jlong JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmPointer(JNIEnv *env, jobject)
 {
-    std::cout << "Current JNI thread env: " << (long)&env << std::endl;
-    
-    long* osrm_ptr = createOsrmInstance();
-
-    if (osrm_ptr != nullptr) {
-        std::cout << "pointer " << osrm_ptr << " is null" << std::endl;
-        return 0;
-    } else {
-        std::cout << "pointer " << osrm_ptr << " is not null" << std::endl;
-        return 1;
-    }
-
-    std::cout << "\n\n\n";
+    std::cout << "returned: " << createOsrmInstance() << std::endl;
+    return 1;
 };
 
 JNIEXPORT jobject JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmResponse(JNIEnv *env, jobject, jdouble fromLongitude, jdouble fromLatitude, jdouble toLongitude, jdouble toLatitude)
@@ -118,11 +131,17 @@ JNIEXPORT jobject JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmResponse(JNIEnv
     config.storage_config = boost::filesystem::path{"/home/eraser/projects/osrm-backend/data/south-korea-latest.osrm"};
     config.use_shared_memory = false;
     config.algorithm = EngineConfig::Algorithm::MLD;
+    std::cout << &config << std::endl;
 
     // OSRM instance
     const OSRM osrm{config};
+    std::cout << "typeid &osrm: " << &osrm << std::endl;
 
     // OSRM route parameters
+    /**
+     * RouteParameters 정적 생성
+     * TODO: RouteParameters 소멸자 존재하나?
+     */
     RouteParameters params;
     params.coordinates.push_back({util::FloatLongitude{fromLongitude}, util::FloatLatitude{fromLatitude}});
     params.coordinates.push_back({util::FloatLongitude{toLongitude}, util::FloatLatitude{toLatitude}});
@@ -181,8 +200,15 @@ JNIEXPORT jobject JNICALL Java_com_eraser_jniosrm_OsrmJNI_getOsrmResponse(JNIEnv
     env->DeleteLocalRef(code_str);
     env->DeleteLocalRef(message_str);
 
-    // end of native code
-    std::cout << "\n\n";
+    // delete c pointer types
+    /**
+     * jfieldID, jmethodID는 C pointer type이므로, deleteLocalRef로 메모리 해제 불가능
+     * C pointer 타입 메모리 해제 방식으로 해제해야 함
+     */
+    delete code_fid;
+    delete message_fid;
+    delete duration_fid;
+    delete distance_fid;
 
     return response;
 }
