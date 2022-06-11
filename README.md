@@ -29,6 +29,12 @@
 
  JNI 인터페이스를 호출하여 OSRM C++ native code에 접근하기 위한 Java class를 작성한다.
 
+* native 코드에서 호출할 메서드의 시그니처를 작성한다
+  * 메서드 몸체는 작성하지 않는다. 작성 시 `native methods do not specify body`와 같은 컴파일 에러 발생
+* java class에서의 메서드 시그니처 함수 파라미터 타입과 native 코드 함수 시그니처 파라미터 타입에 주의한다
+  * primitive type의 경우 값이 복사되나, reference type의 경우 jvm과 native 메모리 상에서 참조 주소를 전달하는 것에 주의 필요
+  * [JNI Types and Data Structures](https://docs.oracle.com/javase/7/docs/technotes/guides/jni/spec/types.html#wp9502) 참고
+
 ```java
 public class OsrmJNI {
 
@@ -36,11 +42,6 @@ public class OsrmJNI {
 
     public int returnMain() {
         return main();
-    }
-
-    // load library as static
-    static {
-        System.load("/home/eraser/projects/osrm-jni/jniosrm/src/src++/build/libosrmjni-example.so");
     }
 }
 ```
@@ -98,6 +99,26 @@ cmake --build .
 /usr/bin/g++ -fPIC  -std=c++14 -DBOOST_TEST_DYN_LINK -DBOOST_SPIRIT_USE_PHOENIX_V3 -DBOOST_RESULT_OF_USE_DECLTYPE -DBOOST_FILESYSTEM_NO_DEPRECATED -I/usr/include/lua5.2 -I/usr/local/include -I/usr/local/include/osrm -D_REENTRANT -O3 -DNDEBUG -shared -Wl,-soname,libosrmjni.so -o libosrmjni.so CMakeFiles/osrmjni.dir/osrmJNI.cpp.o  -L/usr/local/lib -losrm -fuse-ld=gold -Wl,--disable-new-dtags -Wl,--gc-sections -Wl,-O1 -Wl,--hash-style=gnu -Wl,--sort-common -L/usr/local/lib -losrm -fuse-ld=gold -Wl,--disable-new-dtags -Wl,--gc-sections -Wl,-O1 -Wl,--hash-style=gnu -Wl,--sort-common /usr/lib/x86_64-linux-gnu/libboost_regex.so.1.74.0 /usr/lib/x86_64-linux-gnu/libboost_date_time.so.1.74.0 /usr/lib/x86_64-linux-gnu/libboost_chrono.so.1.74.0 /usr/lib/x86_64-linux-gnu/libboost_filesystem.so.1.74.0 /usr/lib/x86_64-linux-gnu/libboost_iostreams.so.1.74.0 /usr/lib/x86_64-linux-gnu/libboost_thread.so.1.74.0 /usr/lib/x86_64-linux-gnu/libboost_system.so.1.74.0 -ltbb -ltbbmalloc -lrt -lz 
 ```
 
+### Load native library in Java application
+
+ 자바 어플리케이션에서 빌드한 C++ shared library를 로드한다.
+
+```java
+public class OsrmJNI {
+
+    private native int main();
+
+    public int returnMain() {
+        return main();
+    }
+
+    // load library as static
+    static {
+        System.load("/home/eraser/projects/osrm-jni/jniosrm/src/src++/build/libosrmjni-example.so");
+    }
+}
+```
+
 
 <br>
 
@@ -121,3 +142,5 @@ cmake --build .
 
 - [ ] OSRM thread-safe 확인
 - [ ] Java application `System.loadLibrary` vs. `System.load`
+  - https://stackoverflow.com/questions/4691095/java-loading-dlls-by-a-relative-path-and-hide-them-inside-a-jar
+  - https://stackoverflow.com/questions/1403788/java-lang-unsatisfiedlinkerror-no-dll-in-java-library-pathå
