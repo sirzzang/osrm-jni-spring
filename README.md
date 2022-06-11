@@ -23,7 +23,7 @@
 
 <br>
 
-## [Call OSRM in Java Application](/jniosrm/)
+## [Call OSRM in Java Application](jniosrm/)
 
 ### Create Java class
 
