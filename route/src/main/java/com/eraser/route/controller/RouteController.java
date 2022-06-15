@@ -24,11 +24,20 @@ public class RouteController {
         RouteResponseDto routeResponseDto = routeService.getRouteByWalking(from, to);
 
         // response body
-        CommonResponse<RouteResponseDto> routeResponse = CommonResponse.onSuccess(
-                "R2000",
-                "Estimated time on foot derived successfully.",
-                routeResponseDto
-        );
+        CommonResponse<RouteResponseDto> routeResponse;
+        if (routeResponseDto.getDistance() == 0 || routeResponseDto.getDuration() == 0) {
+            routeResponse = CommonResponse.onSuccess(
+                    "R2040",
+                    "Estimated time on foot derived, but needs check because of zero value.",
+                    routeResponseDto
+            );
+        } else {
+            routeResponse = CommonResponse.onSuccess(
+                    "R2000",
+                    "Estimated time on foot derived successfully.",
+                    routeResponseDto
+            );
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(routeResponse);
     }
