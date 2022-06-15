@@ -1,7 +1,8 @@
 package com.eraser.route.service;
 
 import com.eraser.route.service.dto.OsrmRouteDto;
+import com.eraser.route.service.dto.RouteResponseDto;
 
 public interface RouteService {
-    public OsrmRouteDto getRouteByWalking(String fromCoordinates, String toCoordinates);
+    public RouteResponseDto getRouteByWalking(String fromCoordinates, String toCoordinates);
 }

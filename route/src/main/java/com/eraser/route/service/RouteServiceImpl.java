@@ -1,5 +1,6 @@
 package com.eraser.route.service;
 
+import com.eraser.route.service.dto.RouteResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +13,13 @@ public class RouteServiceImpl implements RouteService {
     OsrmJniUtil osrmJniUtil;
 
     @Override
-    public OsrmRouteDto getRouteByWalking(String fromCoordinates, String toCoordinates) {
+    public RouteResponseDto getRouteByWalking(String fromCoordinates, String toCoordinates) {
 
-        return osrmJniUtil.returnOsrmRouteResponse(fromCoordinates, toCoordinates);
-    
+        OsrmRouteDto osrmRouteDto = osrmJniUtil.returnOsrmRouteResponse(fromCoordinates, toCoordinates);
+
+        return RouteResponseDto.builder()
+                .distance(osrmRouteDto.getDistance())
+                .duration(osrmRouteDto.getDuration())
+                .build();
     }
-
-
-    
 }
