@@ -29,17 +29,17 @@ JNIEXPORT jobject JNICALL Java_com_eraser_route_service_OsrmJniUtil_getOsrmRoute
     jobject response;
 
     // load OsrmRouteDto class
-    clazz = env -> FindClass("com/eraser/route/service/dto/OsrmRouteDto");
+    clazz = env->FindClass("com/eraser/route/service/dto/OsrmRouteDto");
 
     // methodID, fieldID from OsrmRouteDto class and initialize corresponding instance fields
-    constructor = env -> GetMethodID(clazz, "<init>", "()V");
-    code_fid = env -> GetFieldID(clazz, "code", "Ljava/lang/String");
-    message_fid = env -> GetFieldID(clazz, "message", "Ljava/lang/String");
-    distance_fid = env -> GetFieldID(clazz, "distance", "D");
-    duration_fid = env -> GetFieldID(clazz, "duration", "D");
+    constructor = env->GetMethodID(clazz, "<init>", "()V");
+    code_fid = env->GetFieldID(clazz, "code", "Ljava/lang/String;");
+    message_fid = env->GetFieldID(clazz, "message", "Ljava/lang/String;");
+    distance_fid = env->GetFieldID(clazz, "distance", "D");
+    duration_fid = env->GetFieldID(clazz, "duration", "D");
 
     // instantiate java object
-    response = env -> NewObject(clazz, constructor);
+    response = env->NewObject(clazz, constructor);
 
     // OSRM engine
     EngineConfig config;
@@ -52,12 +52,8 @@ JNIEXPORT jobject JNICALL Java_com_eraser_route_service_OsrmJniUtil_getOsrmRoute
 
     // OSRM route parameters
     RouteParameters params;
-    params.coordinates.push_back(
-        {util::FloatLongitude{fromLongitude}, util::FloatLatitude{fromLatitude}}
-    );
-    params.coordinates.push_back(
-        {util::FloatLongitude{toLongitude}, util::FloatLatitude{toLatitude}}
-    );
+    params.coordinates.push_back({util::FloatLongitude{fromLongitude}, util::FloatLatitude{fromLatitude}});
+    params.coordinates.push_back({util::FloatLongitude{toLongitude}, util::FloatLatitude{toLatitude}});
 
     // OSRM route api result
     engine::api::ResultT result = json::Object();
@@ -89,12 +85,12 @@ JNIEXPORT jobject JNICALL Java_com_eraser_route_service_OsrmJniUtil_getOsrmRoute
     }
 
     // set code, message field
-    env -> SetObjectField(response, code_fid, code_str);
-    env -> SetObjectField(response, message_fid, message_str);
+    env->SetObjectField(response, code_fid, code_str);
+    env->SetObjectField(response, message_fid, message_str);
 
     // delete reference not used
-    env -> DeleteLocalRef(code_str);
-    env -> DeleteLocalRef(message_str);
+    env->DeleteLocalRef(code_str);
+    env->DeleteLocalRef(message_str);
 
     return response;
 };

@@ -8,7 +8,7 @@ public class RouteApplication {
 
 	static {
 		// System.loadLibrary("libosrmjniroute.so");
-		System.load("/home/eraser/projects/osrm-jni/route/src/native/libosrmjniroute.so");
+		System.load("/home/eraser/projects/osrm-jni-spring/route/src/native/libosrmjniroute.so");
 	}
 
 	public static void main(String[] args) {
