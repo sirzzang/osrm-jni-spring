@@ -1,5 +1,6 @@
 package com.eraser.route.common.response;
 
+import com.eraser.route.common.exception.ErrorCode;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -25,11 +26,11 @@ public class CommonResponse<T> {
     }
 
     // Fail Response with data
-    public static <T> CommonResponse<T> onFail(String code, String message, T data) {
+    public static <T> CommonResponse<T> onFail(ErrorCode errorCode, T data) {
         return CommonResponse.<T>builder()
                 .status(Status.FAIL)
-                .code(code)
-                .message(message)
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
                 .data(data)
                 .build();
     }
@@ -44,11 +45,11 @@ public class CommonResponse<T> {
     }
 
     // Fail Response without data
-    public CommonResponse onFail(String code, String message) {
+    public CommonResponse onFail(ErrorCode errorCode) {
         return CommonResponse.builder()
                 .status(Status.FAIL)
-                .code(code)
-                .message(message)
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
                 .build();
     }
 
