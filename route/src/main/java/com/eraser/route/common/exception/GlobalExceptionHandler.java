@@ -7,13 +7,30 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolationException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler
-    private ResponseEntity<CommonResponse<?>> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
+    private ResponseEntity<CommonResponse<?>> handleMissingServletRequestParameterException(
+            MissingServletRequestParameterException e) {
+
+        // 예외 응답
         CommonResponse<?> errorResponse =
                 CommonResponse.onFail(ErrorCode.INVALID_REQUEST_PARAMETER, e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<CommonResponse<?>> handleConstraintViolationException(
+            ConstraintViolationException e) {
+
+        // 예외 응답
+        CommonResponse<?> errorResponse =
+                CommonResponse.onFail(ErrorCode.INVALID_INPUT_VALUE, e.getMessage());
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 }
