@@ -7,7 +7,7 @@ public class OsrmJniUtil {
     // wrapper method for native
     public OsrmRouteDto returnOsrmRouteResponse(String fromCoordinates, String toCoordinates) {
         
-        // split coordinates(TODO refactor)
+        // split coordinates
         String[] fromCoordinatesStrings = fromCoordinates.split(",");
         double fromLongitude = Double.parseDouble(fromCoordinatesStrings[0]);
         double fromLatitude = Double.parseDouble(fromCoordinatesStrings[1]);

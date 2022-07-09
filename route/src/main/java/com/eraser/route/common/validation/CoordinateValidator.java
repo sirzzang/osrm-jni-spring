@@ -21,13 +21,13 @@ public class CoordinateValidator implements ConstraintValidator<CoordinateValue,
 
         boolean isValidCoordinate = COORDINATE_PATTERN.matcher(value).matches();
 
-        // 올바르지 않은 좌표 형식일 때 constraint 에러 메시지 변경
-        if (!isValidCoordinate) {
-            context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(
-                    MessageFormat.format("Coordinate string value {0} is not valid.", value)
-            ).addConstraintViolation();
-        }
+        // // 올바르지 않은 좌표 형식일 때 constraint 에러 메시지 변경
+        // if (!isValidCoordinate) {
+        // context.disableDefaultConstraintViolation();
+        // context.buildConstraintViolationWithTemplate(
+        // MessageFormat.format("Coordinate string value {0} is not valid.",
+        // value)).addConstraintViolation();
+        // }
         return isValidCoordinate;
     }
 }

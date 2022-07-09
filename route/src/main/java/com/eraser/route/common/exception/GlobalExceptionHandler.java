@@ -16,7 +16,6 @@ public class GlobalExceptionHandler {
     private ResponseEntity<CommonResponse<?>> handleMissingServletRequestParameterException(
             MissingServletRequestParameterException e) {
 
-        // 예외 응답
         CommonResponse<?> errorResponse =
                 CommonResponse.onFail(ErrorCode.INVALID_REQUEST_PARAMETER, e.getMessage());
 
@@ -27,7 +26,6 @@ public class GlobalExceptionHandler {
     private ResponseEntity<CommonResponse<?>> handleConstraintViolationException(
             ConstraintViolationException e) {
 
-        // 예외 응답
         CommonResponse<?> errorResponse =
                 CommonResponse.onFail(ErrorCode.INVALID_INPUT_VALUE, e.getMessage());
 

@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eraser.route.service.RouteService;
 
-import javax.validation.Valid;
-
 @Validated
 @RestController
 @RequiredArgsConstructor
